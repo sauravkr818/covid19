@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Animation from "./animation"
 import Navbar from "./Navbar";
 import Carousel from "./Carousel";
 import "../index.css";
@@ -124,7 +123,6 @@ export default function Covid(props) {
                 exit="exit"
             >
                 <div class="py-5"></div>
-                <Animation />
 
                 <Carousel
                     textColor={color.bgColor ? "text-success" : "text-white"}
@@ -283,7 +281,6 @@ export default function Covid(props) {
                 </motion.div>
                 <div class="py-5"></div>
                 <div class="py-5"></div>
-                <Animation />
             </motion.div>
         </>
     );

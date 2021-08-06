@@ -3,9 +3,9 @@ import './App.css';
 import Covid from './Components/Covid'
 import Statewise from './Components/Statewise'
 import DailyCase from './Components/DailyCase'
-import FM from './Components/FM'
 import { Switch, Route, useLocation } from "react-router-dom";
 import { motion, AnimatePresence} from "framer-motion";
+import ReactGa from "react-ga";
 
 function App() {
   const [data, setData] = useState([]);
@@ -29,6 +29,13 @@ function App() {
 // useEffect
 useEffect(() => {
     getCovidData();
+    ReactGa.initialize('UA-198105493-1');
+
+    ReactGa.pageview(window.location.pathname + window.location.search);
+    ReactGa.pageview("/");
+    ReactGa.pageview("/dailycase");
+    ReactGa.pageview("/statewise");
+
 }, []);
 
 console.log(dataStatewise);
@@ -38,9 +45,6 @@ console.log(dataStatewise);
     <div className="App">
     <AnimatePresence exitBeforeEnter>
     <Switch location = {location} key = {location.key}>
-    <Route path="/fm">
-        <FM />
-        </Route>
     <Route path="/dailyCase">
         <DailyCase getdata3={dailyWise}/>
         </Route>

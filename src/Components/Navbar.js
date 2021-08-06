@@ -224,11 +224,21 @@ export default function Navbar(props) {
                                         <input
                                             class="form-control me-2 h5"
                                             type="search"
-                                            placeholder="Search"
+                                            list="datalistOptions"
+                                            id="exampleDataList"
+                                            placeholder="Type to search..."
                                             aria-label="Search"
                                             onChange={searchState}
-                                            defaultValue="Total"
                                         />
+                                        
+                                        <datalist id="datalistOptions" className="overflow-scroll mt-5">
+                                            <option value="Maharashtra" />
+                                            <option value="Delhi" />
+                                            <option value="Bihar" />
+                                            <option value="Jharkhand" />
+                                            <option value="West Bengal" />
+                                        </datalist>
+                                      
                                         <button
                                             className={
                                                 "btn h5 " +
