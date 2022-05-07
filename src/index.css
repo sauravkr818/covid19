@@ -19,3 +19,30 @@ code {
 .bg-dak{
     background-color: #004953;
 }
+
+.menu_active {
+    width: 110px;
+    flex-shrink: 0;
+    height: 40px;
+    background-color: rgba(37, 18, 206, 0.15);
+    overflow: visible;
+    border-radius: 14px;
+    transition: all 0.8s cubic-bezier(0.075, 0.82, 0.165, 1) 0s;  
+  
+}
+
+.width-400{
+    min-width: 100%;
+}
+
+@media(min-width: 500px){
+    .width-400{
+        min-width: 200px;
+    }
+}
+
+@media(max-width: 500px){
+    .custom-width{
+        min-width: 100%;        
+    }
+}

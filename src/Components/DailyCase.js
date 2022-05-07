@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion";
 import "../index.css";
@@ -8,11 +8,27 @@ export default function DailyCase(props) {
         bgColor: true,
     });
 
+    const [dark, setDark] = useState(false);
+
+    useEffect(() => {
+        document.title = "DailCase | Covid19"
+    },[]);
+
     const darkModes = (childData) => {
-        setColor({
-            bgColor: childData,
-        });
+        setDark(childData);
     };
+
+    useEffect(() => {
+        let savedTheme = localStorage.getItem("dark2");
+        if(savedTheme === null){
+            savedTheme = false;
+        }
+        if(savedTheme === "false"){
+            console.log("Came");
+            savedTheme = false;
+        }
+        setDark(savedTheme);
+    },[dark])
 
     //variant 
     const baseContainer = {
@@ -40,9 +56,9 @@ export default function DailyCase(props) {
         <>
             <Navbar whichMode={darkModes} />
             <motion.div
-                className={
+                 className={
                     "container-fluid overflow-hidden " +
-                    (color.bgColor ? "bg-white" : "bg-dak")
+                    (!dark ? "bg-white" : "bg-dak")
                 }
                 variants={baseContainer}
                 initial="hidden"
@@ -50,7 +66,7 @@ export default function DailyCase(props) {
                 exit="exit"
             >
                 <div className="py-5"></div>
-                <div className={"card border-0 " + (color.bgColor ? "bg-white" : "bg-dak")}>
+                <div className={"card border-0 " + (!dark ? "bg-white" : "bg-dak")}>
                     <div class="d-flex align-items-start">
                         <div className="col-md-3 w-25 mx-auto mt-5 mb-5 ps-2">
                             <div className="w-75">
@@ -61,7 +77,7 @@ export default function DailyCase(props) {
                                     aria-orientation="vertical"
                                 >
                                     <button
-                                        class={"active btn mb-2 " +(color.bgColor ? "btn-outline-success" : "btn-outline-warning")}
+                                        class={"active btn mb-2 " +(!dark ? "btn-outline-success" : "btn-outline-warning")}
                                         id="v-pills-home-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#v-pills-home"
@@ -77,7 +93,7 @@ export default function DailyCase(props) {
                                         }
                                     </button>
                                     <button
-                                        class={"btn mb-2 " +(color.bgColor ? "btn-outline-success" : "btn-outline-warning")}
+                                        class={"btn mb-2 " +(!dark ? "btn-outline-success" : "btn-outline-warning")}
                                         id="v-pills-profile-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#v-pills-profile"
@@ -93,7 +109,7 @@ export default function DailyCase(props) {
                                         }
                                     </button>
                                     <button
-                                        class={"btn mb-2 " +(color.bgColor ? "btn-outline-success" : "btn-outline-warning")}
+                                        class={"btn mb-2 " +(!dark ? "btn-outline-success" : "btn-outline-warning")}
                                         id="v-pills-messages-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#v-pills-messages"
@@ -109,7 +125,7 @@ export default function DailyCase(props) {
                                         }
                                     </button>
                                     <button
-                                        class={"btn mb-2 " +(color.bgColor ? "btn-outline-success" : "btn-outline-warning")}
+                                        class={"btn mb-2 " +(!dark ? "btn-outline-success" : "btn-outline-warning")}
                                         id="v-pills-settings-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#v-pills-settings"

@@ -1,53 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import storage from "local-storage-fallback";
+import Select from "react-select";
 import "../index.css";
 
-export default function Navbar(props) {
-    const [state, setState] = useState({
-        bgColor: true,
-        btnText: true,
-    });
+function getInitialTheme(){
+    const savedTheme = storage.getItem("dark");
 
+    return savedTheme;
+}
+
+function getInitialTheme2(){
+    let savedTheme = storage.getItem("dark2");
+    if(savedTheme === null){
+        savedTheme = false;
+    }
+    if(savedTheme === "false"){
+        savedTheme = false;
+    }
+    return savedTheme;
+}
+
+
+export default function Navbar(props) {
+    
+    const [dark2, setDark2] = useState(getInitialTheme2);
     const [search, setSearch] = useState({
         state: "",
     });
-
     const [info, setInfo] = useState(1);
-
-    const searchState = (e) => {
-        setSearch({
-            state: e.target.value,
-        });
-    };
-
-    const searchFunction = (e) => {
-        e.preventDefault();
-        let i,
-            flag = 0;
-        for (i = 0; i < data.length; i++) {
-            if (search.state === data[i].state) {
-                flag = 1;
-                break;
-            }
-        }
-        if (flag === 1) {
-            props.arrayIndex(i);
-        } else {
-            props.arrayIndex(0);
-            setInfo(1);
-            props.infoText(info);
-        }
-    };
-
-    const darkMode = () => {
-        setState({
-            bgColor: !state.bgColor,
-            btnText: !state.btnText,
-        });
-        props.whichMode(!state.bgColor);
-    };
-
     const [data, setData] = useState([]);
 
     const location = window.location.pathname;
@@ -55,7 +37,10 @@ export default function Navbar(props) {
     //fetch api
     const getCovidData = async () => {
         try {
-            const res = await fetch("https://api.covid19india.org/data.json");
+            const res = await fetch(
+                "https://data.covid19india.org/data.json",
+                {}
+            );
             const actualData = await res.json();
             setData(actualData.statewise);
             props.allInfo(actualData.statewise[0]);
@@ -65,38 +50,47 @@ export default function Navbar(props) {
         }
     };
 
+    let arr = [];
+    data.filter((data) => arr.push(data.state));
+    let arrs = [{ value: "", label: "" }];
+    arr.map((item) => arrs.push({ value: item, label: item }));
+    const searchFunction = (e) => {setSearch({state: e,});let i,flag = 0;for (i = 0; i < data.length; i++) {if (e.value === data[i].state) {flag = 1;break;}}
+        if (flag === 1) {
+            props.arrayIndex(i);
+        } else {
+            props.arrayIndex(0);
+            setInfo(1);
+            props.infoText(info);
+        }
+    };
+
     // useEffect
     useEffect(() => {
         getCovidData();
     }, []);
 
+    useEffect(() => {
+        storage.setItem('dark2',dark2);
+        props.whichMode(dark2);
+    },[dark2]);
+
     return (
         <>
+        {console.log(dark2)}
             <nav
-                class={
+                className={
                     "navbar navbar-expand-lg sticky-top shadow " +
-                    (state.bgColor
+                    (!dark2
                         ? "navbar-light bg-white"
                         : "navbar-dark bg-dak")
                 }
+                
             >
-                <div class="container-fluid">
+            
+                <div className="container-fluid">
                     <motion.div>
-                        <Link to="/" className="navbar-brand ps-5 p-2">
-                            {/* <span
-                                class="material-icons ps-2"
-                                style={{ fontSize: "30px" }}
-                            >
-                                coronavirus
-                            </span> */}
-                            <svg
-                                id="Capa_1"
-                                enable-background="new 0 0 512.636 512.636"
-                                height="80"
-                                viewBox="0 0 512.636 512.636"
-                                width="100"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
+                        <NavLink to="/" className="navbar-brand ps-sm-5 p-sm-2">
+                            <svg id="Capa_1" enable-background="new 0 0 512.636 512.636" height="40" viewBox="0 0 512.636 512.636" width="100" xmlns="http://www.w3.org/2000/svg">
                                 <g>
                                     <g>
                                         <g>
@@ -108,18 +102,8 @@ export default function Navbar(props) {
                                                     />
                                                 </g>
                                             </g>
-                                            <circle
-                                                cx="227.047"
-                                                cy="352.532"
-                                                fill="#f37c7c"
-                                                r="40.574"
-                                            />
-                                            <circle
-                                                cx="352.474"
-                                                cy="233.87"
-                                                fill="#f9c6c6"
-                                                r="28.69"
-                                            />
+                                            <circle cx="227.047" cy="352.532" fill="#f37c7c" r="40.574"/>
+                                            <circle cx="352.474" cy="233.87" fill="#f9c6c6" r="28.69"/>
                                         </g>
                                         <g>
                                             <path
@@ -127,12 +111,7 @@ export default function Navbar(props) {
                                                 fill="#f37c7c"
                                             />
                                         </g>
-                                        <circle
-                                            cx="202.104"
-                                            cy="212.354"
-                                            fill="#f9c6c6"
-                                            r="66.254"
-                                        />
+                                        <circle cx="202.104" cy="212.354" fill="#f9c6c6" r="66.254"/>
                                     </g>
                                     <g>
                                         <path d="m262.161 169.568c-2.406-3.372-7.089-4.155-10.461-1.749s-4.155 7.09-1.749 10.461c7.135 9.999 10.906 21.781 10.906 34.074 0 32.397-26.356 58.753-58.753 58.753s-58.754-26.356-58.754-58.753 26.357-58.754 58.754-58.754c9.205 0 18.032 2.082 26.239 6.187 3.704 1.854 8.21.353 10.063-3.352 1.853-3.704.353-8.209-3.352-10.063-10.309-5.157-21.395-7.772-32.95-7.772-40.668 0-73.754 33.086-73.754 73.754s33.086 73.753 73.754 73.753 73.753-33.085 73.753-73.753c.001-15.434-4.735-30.229-13.696-42.786z" />
@@ -146,112 +125,80 @@ export default function Navbar(props) {
                                     </g>
                                 </g>
                             </svg>
-                        </Link>
+                        </NavLink>
                     </motion.div>
-                    <button
-                        class="navbar-toggler border-0"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarNavAltMarkup"
-                        aria-controls="navbarNavAltMarkup"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span class="navbar-toggler-icon"></span>
+                    <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
                     </button>
-                    <div
-                        class="collapse navbar-collapse"
-                        id="navbarNavAltMarkup"
-                    >
-                        <div className="ms-auto my-auto d-flex justify-content-center">
-                            <div class="navbar-nav pe-5">
-                                <Link
-                                    to="/"
-                                    className="nav-link active h6 me-2"
-                                >
-                                    <div className="d-flex">
-                                        {" "}
+                    <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div className="ms-auto">
+                            <div className="navbar-nav pe-sm-5 me-sm-5">
+                                <NavLink activeClassName="menu_active" exact to="/" className="nav-link active h6 me-sm-4 custom-width ">
+                                    <div className="d-flex justify-content-center">
                                         <span
-                                            class="material-icons pe-1"
+                                            className="material-icons pe-1"
                                             style={{ fontSize: "20px" }}
                                         >
                                             home
                                         </span>
                                         Home
                                     </div>
-                                </Link>
-                                <Link
+                                </NavLink>
+                                <NavLink
+                                    activeClassName="menu_active"
                                     to="/dailyCase"
-                                    className="nav-link active h6 me-2"
+                                    className="nav-link h6 me-sm-4 active custom-width"
                                 >
-                                    <div className="d-flex">
+                                    <div className="d-flex justify-content-center">
                                         <span
-                                            class="material-icons pe-1"
+                                            className="material-icons pe-1"
                                             style={{ fontSize: "22px" }}
                                         >
                                             trending_up
                                         </span>
-                                        Daily Case
+                                        Daily
                                     </div>
-                                </Link>
-                                <Link
+                                </NavLink>
+                                <NavLink
+                                    activeClassName="menu_active"
                                     to="/statewise"
-                                    className="nav-link active h6 me-2"
+                                    className="nav-link h6 me-sm-4 active custom-width"
                                 >
-                                    <div className="d-flex">
+                                    <div className="d-flex justify-content-center">
                                         <span
-                                            class="material-icons pe-1"
+                                            className="material-icons pe-1"
                                             style={{ fontSize: "20px" }}
                                         >
                                             bar_chart
                                         </span>
                                         Statewise
                                     </div>
-                                </Link>
+                                </NavLink>
                                 <div
                                     className={
-                                        "h5 btn me-4 " +
-                                        (state.bgColor
+                                        "h5 btn me-sm-4 " +
+                                        (!dark2
                                             ? "btn-outline-dark"
                                             : "btn-outline-warning")
                                     }
-                                    onClick={darkMode}
+                                    onClick={(e) => setDark2(dark2 ? false : true)}
                                 >
-                                    {state.btnText ? "Midnight Dark" : "Light"}
+                                    {dark2 ? "Light" : "Dark"}{console.log(dark2)}
                                 </div>
                                 {location === "/statewise" ? (
-                                    <form class="d-flex">
-                                        <input
-                                            class="form-control me-2 h5"
-                                            type="search"
-                                            list="datalistOptions"
-                                            id="exampleDataList"
-                                            placeholder="Type to search..."
-                                            aria-label="Search"
-                                            onChange={searchState}
+                                    <motion.form
+                                        className="d-flex"
+                                    >
+                                        <Select
+                                            options={arrs}
+                                            value={search.state}
+                                            style={{ width: "400px" }}
+                                            className="basic-multi-select width-400"
+                                            classNamePrefix="select"
+                                            showNewOptionAtTop={false}
+                                            onChange={searchFunction}
                                         />
-                                        
-                                        <datalist id="datalistOptions" className="overflow-scroll mt-5">
-                                            <option value="Maharashtra" />
-                                            <option value="Delhi" />
-                                            <option value="Bihar" />
-                                            <option value="Jharkhand" />
-                                            <option value="West Bengal" />
-                                        </datalist>
-                                      
-                                        <button
-                                            className={
-                                                "btn h5 " +
-                                                (state.bgColor
-                                                    ? "btn-outline-success"
-                                                    : "btn-outline-warning")
-                                            }
-                                            type="submit"
-                                            onClick={searchFunction}
-                                        >
-                                            Search
-                                        </button>
-                                    </form>
+                                    </motion.form>
                                 ) : (
                                     ""
                                 )}

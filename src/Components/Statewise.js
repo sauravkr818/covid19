@@ -4,24 +4,15 @@ import Navbar from "./Navbar";
 import "../index.css";
 
 export default function Statewise() {
-    const [color, setColor] = useState({
-        bgColor: true,
-    });
+    
+    useEffect(() => {
+        document.title = "Statewise | Covid19"
+    },[]);
 
-    const [alert, setAlert] = useState({
-        close: '' 
-    });
-
-    const closeAlert = () => {
-        setAlert({
-            close: 'none',
-        })
-    }
+    const [dark, setDark] = useState(false);
 
     const darkModes = (childData) => {
-        setColor({
-            bgColor: childData,
-        });
+        setDark(childData);
     };
 
     //useState
@@ -44,7 +35,7 @@ export default function Statewise() {
     const getCovidData = async () => {
         let actualData;
         try {
-            const res = await fetch("https://api.covid19india.org/data.json");
+            const res = await fetch("https://data.covid19india.org/data.json");
             actualData = await res.json();
             setData(actualData.statewise);
             setData2(actualData.statewise);
@@ -55,8 +46,23 @@ export default function Statewise() {
 
     // useEffect
     useEffect(() => {
+        var mode = localStorage.getItem('dark');
+        //setDark(mode);
         getCovidData();
     }, []);
+
+    useEffect(() => {
+        let savedTheme = localStorage.getItem("dark2");
+    if(savedTheme === null){
+        savedTheme = false;
+    }
+    if(savedTheme === "false"){
+        console.log("Came");
+        savedTheme = false;
+    }
+    setDark(savedTheme);
+
+    },[dark])
 
     const getStateName = (childrenData) => {
         const arr2 = [...data2];
@@ -103,7 +109,7 @@ export default function Statewise() {
     return (
         <>
             {" "}
-            <motion.div
+            {/* <motion.div
                 variants={alertDiv}
                 initial="hidden"
                 animate="visible"
@@ -129,12 +135,12 @@ export default function Statewise() {
                     class="btn-close"
                     onClick={closeAlert}
                 ></button>
-            </motion.div>
+            </motion.div> */}
             <Navbar whichMode={darkModes} arrayIndex={getStateName} infoText={injectText} />
             <motion.div
                 className={
                     "container-fluid overflow-hidden " +
-                    (color.bgColor ? "bg-white" : "bg-dak")
+                    (!dark ? "bg-white" : "bg-dak")
                 }
                 variants={baseContainer}
                 initial="hidden"

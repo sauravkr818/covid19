@@ -4,20 +4,23 @@ import Covid from './Components/Covid'
 import Statewise from './Components/Statewise'
 import DailyCase from './Components/DailyCase'
 import { Switch, Route, useLocation } from "react-router-dom";
-import { motion, AnimatePresence} from "framer-motion";
+import { AnimatePresence} from "framer-motion";
 import ReactGa from "react-ga";
 
 function App() {
   const [data, setData] = useState([]);
+
+  const [dataGraph, setDataGraph] = useState([]);
 
   const [dataStatewise, setdataStatewise] = useState([]);
   const [dailyWise, setdailyWise] = useState([]);
     
   const getCovidData = async () => {
     try {
-        const res = await fetch("https://api.covid19india.org/data.json");
+        const res = await fetch('https://data.covid19india.org/data.json');
         const actualData = await res.json();
         setData(actualData.statewise[0]);
+        setDataGraph(actualData.cases_time_series);
         setdataStatewise(actualData.statewise);
         setdailyWise(actualData.cases_time_series);
 
@@ -38,7 +41,7 @@ useEffect(() => {
 
 }, []);
 
-console.log(dataStatewise);
+//console.log(dataGraph);
 
   const location = useLocation();
   return (
@@ -52,7 +55,7 @@ console.log(dataStatewise);
         <Statewise getdata2={dataStatewise}/>
         </Route>
         <Route path="/">
-        <Covid getdata1={data} />
+        <Covid getdata1={data} graph={dataGraph}/>
         </Route>
       </Switch>
       </AnimatePresence>
